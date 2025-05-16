@@ -5,4 +5,27 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "SMA_REACT"
 authors = [{name = "Patrick Walgren and Jacob Mingear"}]
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = "LICENSE"
+keywords = ["Shape Memory Alloys", "Constitutive Model", "Calibration", "SMA"]
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 4 - Beta",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Science/Research"
+  "Topic :: Scientific/Engineering",
+]
 dynamic = ["version", "description"]
+
+[project.urls]
+Homepage = "https://github.com/maestrolab/SMA_REACT"
+Documentation = "https://sma-react.readthedocs.io/en/latest/"
+Repository = "https://github.com/maestrolab/SMA_REACT.git"
+Issues = "https://github.com/maestrolab/SMA_REACT/issues"
+
+
