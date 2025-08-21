@@ -364,13 +364,14 @@ def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, 
     if choice:
         asm_cols.append("Filtered Strain")
     asmada_df = final_df[asm_cols]
-    asmada_df.to_csv("output/ASMADA Data.csv", index=False)
+    asmada_df = final_df[asm_cols].replace("", pd.NA).dropna().reset_index(drop=True) #remove empty space from moving average filter
+    asmada_df.to_csv("output/clean_data_TSE.csv", index=False)
 
     # PLOTTING DATA
     start_index = final_df["Relative Time"].searchsorted(relative_start_time, side="left")
     end_index = final_df["Relative Time"].searchsorted(relative_end_time, side="right")
     df_to_plot = final_df.iloc[start_index:end_index + 1, :]
-    df_to_plot.to_csv("output/PLotting df.csv")
+    df_to_plot.to_csv("output/processed_synced.csv")
     if "temperature" in mov_avg_set or "all" in mov_avg_set:
         temp_vs_strain_plot, colorbar_error = plot_temp_vs_strain(df_to_plot, "MTS Temperature Moving Average", choice, no_cycles, True,
                                                   "Fluke Temperature Moving Average")
@@ -382,7 +383,7 @@ def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, 
                                                 True, fluke_temp_title)
 
     # EXPORTING DATA
-    final_df.to_csv("output/MTS + Fluke.csv", index=True)
+    #final_df.to_csv("output/MTS + Fluke.csv", index=True)
 
     # RETURNING PLOTS
     plots = [temp_vs_strain_plot, temp_vs_stress_vs_strain_plot]

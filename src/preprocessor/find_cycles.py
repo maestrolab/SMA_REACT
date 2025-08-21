@@ -4,6 +4,7 @@ from scipy.signal import find_peaks
 
 
 # function that determines what is considered a cycle and adds cycle numbers to the dataframe
+#This might be ASMADA code? -Jacob 5/20/2025
 def find_cycles(df, temp_title):
     # cycles error
     cycle_error = False

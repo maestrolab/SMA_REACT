@@ -6,7 +6,57 @@ SMA-REACT is distributed under the BSD 3-Clause License, which [``allows unlimit
 
 ## Downloads
 
-SMA REACT is released on [PyPi](https://pypi.org/project/SMA-REACT/). You can also build the package from source.
+1. Go to the [Releases](https://github.com/maestrolab/SMA_REACT/releases) page and download the SMA_REACT executable for your operating system. 
+	- 1a. Click **Assets** to expand the list of downloadable files and select/download the one for your operating system. You can also download the `input.zip` file which contains sample input files for the SMA_REACT software.
+
+ 	- 1b. Unzip the files and double click either the `calibration` <img src="icons/Rcalibration.png" alt="Icon" width="30" height="30"> or the `preprocessor` <img src="icons/Rpreprocessor.png" alt="Icon" width="30" height="30"> executables to run the SMA_REACT software.	
+
+2. If you prefer to install the software from source, you can clone the repository and install the dependencies manually. We recommend doing this in a **virtual environment** to avoid package conflicts.
+	
+	- 2a. Clone the repository:
+	
+	    ```bash
+	    git clone https://github.com/maestrolab/SMA_REACT.git
+	    cd SMA_REACT
+	    ```
+	
+   	- 2b. (Optional but recommended) Create and activate a virtual environment:
+	
+	    - On macOS/Linux:
+	
+	        ```bash
+	        python3 -m venv venv
+	        source venv/bin/activate
+	        ```
+	
+	    - On Windows:
+	
+	        ```cmd
+	        python -m venv venv
+	        venv\Scripts\activate
+	        ```
+	
+	- 2c. Install the package and its dependencies (from the directory containing the `pyproject.toml` file):
+	
+	    ```bash
+	    pip install .
+	    ```
+	
+	    This will install all required packages with the correct versions as defined in the project.
+
+   	- 2d. Run the `calibration` <img src="icons/Rcalibration.png" alt="Icon" width="30" height="30"> GUI using the command:
+
+   	    ```
+	    sma-react-calibration
+	    ```
+
+		Run the `preprocessor` <img src="icons/Rpreprocessor.png" alt="Icon" width="30" height="30"> GUI using the command:
+
+	     ```
+	     sma-react-preprocessor
+	     ```
+
+3. If you prefer not to use `pip install .`, you can manually install the required packages individually (ensure you get the correct package versions).
 
 ## Documentation
 

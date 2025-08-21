@@ -7,6 +7,7 @@ import random
 import shelve
 import pprint
 import os
+import sys
 
 import numpy as np
 import scipy.optimize as opt
@@ -21,8 +22,14 @@ from deap import (
 from . import util_funcs
 from . import Full_Model_stress
 
+from pathlib import Path
+
 #Numpy presets
 np.seterr(all='raise') #tell numpy to raise floating point errors.
+
+# Create output folder if it doesn't exist
+output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+output_dir.mkdir(parents=True, exist_ok=True)
 
 def cxTwoPointCopy(ind1, ind2):
     """Execute a two points crossover with copy on the input individuals. The
@@ -356,12 +363,12 @@ def evaluate(
         i +=1
 
 
-
     if plot_flag == True:
         try:
             for i in range(len(eps_model_total)):
                 file_name = 'optimal_model_'+str(i)+'.csv'
-                output_file = os.path.join(os.getcwd(),'output',file_name)
+                output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+                output_file = os.path.join(output_dir,file_name)
                 model_prediction = np.zeros(shape=(len(eps_model_total[0]),2))
                 model_prediction[:,0] = np.array(T_total[i])
                 model_prediction[:,1] = eps_model_total[i]
@@ -520,7 +527,10 @@ def optimizer(toolbox,popSize,genSize,data, calWin, seed=None):
         logbook.record(gen=gen, evals=len(invalid_ind), **record)
         print(logbook.stream)
         #pop.sort(key=lambda x: x.fitness.values)
-        db=shelve.open('popLog')
+        log_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+        log_dir.mkdir(parents=True, exist_ok=True)
+        shelve_path = str(log_dir / 'popLog')  # Must be str for shelve
+        db=shelve.open(shelve_path)
         db['lastPop']=pop
         if cntGenSave == nGenSave:
             db[repr(gen)+'Pop']=pop

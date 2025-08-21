@@ -8,9 +8,9 @@ from PyQt5.QtGui import QPixmap
 
 
 def textToLatex(text, width, height, widget):
-    rc["font.serif"] = "Palatino Linotype"
-    rc["font.family"] = "serif"
-    rc["text.usetex"] = True
+    #rc["font.serif"] = "Palatino Linotype"
+    #rc["font.family"] = "serif"
+    #rc["text.usetex"] = True
 
     dpi = 125
     fig = Figure(figsize=(width/dpi, height/dpi), dpi=dpi)
@@ -55,6 +55,5 @@ def textToLatex(text, width, height, widget):
 
 
     return label
-
 
 

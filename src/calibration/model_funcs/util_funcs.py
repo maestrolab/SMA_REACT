@@ -124,21 +124,18 @@ def plot_settings(format_flag):
     '''
     matplotlib.rcParams['svg.fonttype'] = 'none'
     
+    # Define available fonts for fallback
+    fallback_sans = ["Franklin Gothic Medium", "Arial", "DejaVu Sans", "Liberation Sans"]
+    fallback_serif = ["Times New Roman", "DejaVu Serif", "Liberation Serif"]
+
     if format_flag == "presentation":
-        font_name = "FranklinGothic"
-        matplotlib.rcParams["text.usetex"] = False
+        #matplotlib.rcParams["text.usetex"] = False
         matplotlib.rcParams.update({'font.size': 18})
-    elif format_flag == "publication":
-        font_name = "TimesNewRoman"
-        matplotlib.rcParams["text.usetex"] = True
-    # Choose between two font groups
-    if font_name == "FranklinGothic":
-        matplotlib.rcParams["font.sans-serif"] = "Franklin Gothic Medium"
-        # Then, "ALWAYS use sans-serif fonts"
+        matplotlib.rcParams["font.sans-serif"] = fallback_sans
         matplotlib.rcParams["font.family"] = "sans-serif"
-    if font_name == "TimesNewRoman":
-        matplotlib.rcParams["font.serif"] = "Times New Roman"
-        # Then, "ALWAYS use serif fonts"
+    elif format_flag == "publication":
+        #matplotlib.rcParams["text.usetex"] = True
+        matplotlib.rcParams["font.serif"] = fallback_serif
         matplotlib.rcParams["font.family"] = "serif"
         
     return 

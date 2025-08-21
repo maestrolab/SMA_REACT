@@ -119,7 +119,7 @@ class DataInputWidget(QtWidgets.QWidget):
         self.asterisk = QLabel(self)
         self.asterisk.setText('*All files must be formatted the same')
 
-        self.keys = QHBoxLayout(self)
+        self.keys = QHBoxLayout()
         # self.spacer = QSpacerItem()
         # self.spacer2 = QSpacerItem()
         # self.spacer3 = QSpacerItem()
@@ -167,7 +167,7 @@ class DataInputWidget(QtWidgets.QWidget):
         font.setBold(False)
         font.setWeight(font_weight)
 
-        self.buttons = QtWidgets.QHBoxLayout(self)
+        self.buttons = QtWidgets.QHBoxLayout()
         self.buttons.setObjectName("buttons")
         self.load_button = QtWidgets.QPushButton(self)
         self.load_button.setMinimumSize(QtCore.QSize(100, 100))

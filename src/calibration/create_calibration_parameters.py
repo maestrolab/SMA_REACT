@@ -12,8 +12,26 @@ from PyQt5.QtGui import QPixmap
 
 from matplotlib.figure import Figure
 from matplotlib import rcParams as rc
+from matplotlib import font_manager
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import shutil
+import tempfile
 
+#def log_error(msg):
+#    import os
+#    try:
+#        # Use the user's home directory for safety
+#        log_path = os.path.expanduser("~/pyapp_error_log_cal.txt")
+#        with open(log_path, "a") as f:
+#            f.write(msg + "\n")
+#    except Exception as log_fail:
+#        # Last resort if even logging fails
+#        print("Logging failed!")
+#        print(f"Type: {type(log_fail)}")
+#        print(f"Error: {log_fail}")
+#        print("Traceback:")
+#        traceback.print_exc()
+#        pass
 
 class CalibrationParametersWidget(QtWidgets.QWidget):
     '''
@@ -21,6 +39,7 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
     can be defined (active design variables, bounds, specified values,
     optimization parameters).
     '''
+        
     def __init__(self):
         '''
         Initialize the tab.
@@ -458,7 +477,6 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
 
         self.right_labels.addWidget(self.value_label_right)
 
-
         #%% Pushbuttons
         self.buttons = QtWidgets.QHBoxLayout()
 
@@ -804,9 +822,6 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
 
 
         #%% Alignment commands need to be after the grid layout
-
-
-
         self.prop_constraints_label.setAlignment(QtCore.Qt.AlignRight)
         self.modulus_flag.setAlignment(QtCore.Qt.AlignRight)
         self.slope_flag.setAlignment(QtCore.Qt.AlignRight)
@@ -824,7 +839,7 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
         #%% Initial conditions
         self.loadDefaults()
 
-    # %% Functions 
+    # %% Functions
     def uncheck(self,state):
         '''
         Translates all of the checkboxes for each
@@ -1527,7 +1542,6 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
 
         '''
 
-
         property_object.label = self.textToLatex(
             r"$"+name+r"$ [$\mathrm{"+str(units)+"}$]:",
             parameter_label_width,
@@ -1845,12 +1859,26 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
             png with latex rendered font .
 
         '''
-        rc["font.serif"] = "Palatino Linotype"
+        # Check if 'Palatino Linotype' is available
+        available_fonts = set(f.name for f in font_manager.fontManager.ttflist)
+
+        if "Palatino Linotype" in available_fonts:
+            rc["font.serif"] = ["Palatino Linotype"]
+        else:
+            #print("'Palatino Linotype' not found. Falling back to default serif.")
+            # You can list common serif fallbacks if you want
+            rc["font.serif"] = ["DejaVu Serif", "Times New Roman", "Georgia"]
+
+        # Always set the general family to 'serif' to activate the list above
         rc["font.family"] = "serif"
-        try:
+        
+        
+        if shutil.which("latex"):
+            #print("LaTeX found, using it for rendering.")
             rc["text.usetex"] = True
-        except:
-            print('Rending mathematical symbols without LaTeX')
+        else:
+            #print("LaTeX not found, rendering without it.")
+            rc["text.usetex"] = False
 
         dpi = 125
         fig = Figure(figsize=(width/dpi, height/dpi), dpi=dpi)
@@ -1864,13 +1892,18 @@ class CalibrationParametersWidget(QtWidgets.QWidget):
         fig.patch.set_facecolor('none')
 
         canvas.draw()
-        canvas.print_figure("latex.png",facecolor=fig.get_facecolor())
-        pixmap = QPixmap('latex.png')
+        
+        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
+            tmp_path = tmpfile.name
+
+        canvas.print_figure(tmp_path, facecolor=fig.get_facecolor())
+        
+        pixmap = QPixmap(tmp_path)
 
         label = QLabel(self)
         label.setPixmap(pixmap)
         import os
-        os.remove('latex.png')
+        os.remove(tmp_path)
         label.setMinimumSize(QSize(width, height))
 
         return label

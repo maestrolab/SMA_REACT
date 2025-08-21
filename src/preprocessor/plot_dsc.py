@@ -45,10 +45,13 @@ def plotDSC(file_name, step_initial, step_final, x_axis, y_axis, filter, movavgx
         ax2.set_ylabel(y_axis)
 
     # exporting to an excel file
-    writer = pd.ExcelWriter("DSC.xlsx")
-    data.to_excel(writer)
-    writer.save()
-    writer.close()
+    # writer = pd.ExcelWriter("DSC.xlsx")
+    # data.to_excel(writer)
+    # writer.save()
+    # writer.close()
+    
+    with pd.ExcelWriter("output/DSC.xlsx", engine="openpyxl") as writer:
+        data.to_excel(writer, index=False)
 
     return dsc_fig
 
