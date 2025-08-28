@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['SMA_REACT_GUI\\preprocessor_GUI.py'],
+    ['..\..\SMA_REACT_GUI\\preprocessor_GUI.py'],
     pathex=[],
     binaries=[],
     datas=[('src/preprocessor/media', 'src/preprocessor/media')],
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icons\\Rpreprocessor.ico'],
+    icon=['..\..\icons\\Rpreprocessor.ico'],
 )

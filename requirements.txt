@@ -5,6 +5,7 @@ deap
 matplotlib
 numpy
 pandas
+pyinstaller
 pyqt5
 scikit-learn
 scipy

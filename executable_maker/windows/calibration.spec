@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['SMA_REACT_GUI\\calibration_GUI.py'],
+    ['..\..\SMA_REACT_GUI\\calibration_GUI.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icons\\Rcalibration.ico'],
+    icon=['..\..\icons\\Rcalibration.ico'],
 )

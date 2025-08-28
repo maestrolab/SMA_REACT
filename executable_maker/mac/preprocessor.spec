@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['SMA_REACT_GUI/preprocessor_GUI.py'],
+    ['../../SMA_REACT_GUI/preprocessor_GUI.py'],
     pathex=[],
     binaries=[],
     datas=[('src/preprocessor/media', 'src/preprocessor/media')],
@@ -46,6 +46,6 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name='preprocessor.app',
-    icon='icons/Rpreprocessor.icns',
+    icon='../../icons/Rpreprocessor.icns',
     bundle_identifier=None,
 )
