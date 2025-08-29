@@ -30,7 +30,6 @@ from src.preprocessor.analyze_fluke_and_mts import analyze_fmts
 from src.preprocessor.Geometry_Code_In_Console import Geometry_input
 from src.preprocessor.plot_dsc import plotDSC
 from src.preprocessor.troubleshoot_window import TroubleshootWindow
-from pathlib import Path
 import cgitb
 cgitb.enable(format="text")
 
