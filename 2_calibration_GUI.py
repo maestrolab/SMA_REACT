@@ -12,6 +12,7 @@ import json
 import os
 from datetime import date
 from PyQt5 import QtGui, QtWidgets
+from pathlib import Path
 
 
 from src.data_input.create_data_input import (
@@ -27,6 +28,7 @@ from src.calibration_progress.create_calibration_progress_widget import (
     CalibrationProgressWidget
     )
 
+Path("output").mkdir(parents=True, exist_ok=True)
 
 class App(QtWidgets.QMainWindow):
     '''

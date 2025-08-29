@@ -23,12 +23,14 @@ from src.preprocessor.analyze_fluke_and_mts import analyze_fmts
 from src.preprocessor.Geometry_Code_In_Console import Geometry_input
 from src.preprocessor.plot_dsc import plotDSC
 from src.preprocessor.troubleshoot_window import TroubleshootWindow
+from pathlib import Path
 import cgitb
 cgitb.enable(format="text")
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
+Path("output").mkdir(parents=True, exist_ok=True)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -1679,7 +1681,7 @@ class Ui_MainWindow(object):
 
     def loadDefaults(self):
         self.none_movavg_checkbox.setChecked(True)
-        self.bandpass_no_checkbox.setChecked(True)
+        #self.bandpass_no_checkbox.setChecked(True)
         self.shape_dropdown.setCurrentIndex(1)
         self.input_unit_dropdown.setCurrentIndex(2)
         self.output_unit_dropdown.setCurrentIndex(2)
