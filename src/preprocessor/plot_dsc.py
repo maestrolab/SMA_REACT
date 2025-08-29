@@ -52,9 +52,12 @@ def plotDSC(file_name, step_initial, step_final, x_axis, y_axis, filter, movavgx
     
     # exporting to a CSV file
     data.to_csv("output/DSC.csv", index=False)
+<<<<<<< HEAD
     
     #with pd.ExcelWriter("output/DSC.xlsx", engine="openpyxl") as writer:
      #   data.to_excel(writer, index=False)
+=======
+>>>>>>> postclean-prejune
 
     return dsc_fig
 

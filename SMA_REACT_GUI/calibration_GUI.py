@@ -12,7 +12,10 @@ import json
 import os
 from datetime import date
 from PyQt5 import QtGui, QtWidgets
+<<<<<<< HEAD:SMA_REACT_GUI/calibration_GUI.py
 import sys
+=======
+>>>>>>> postclean-prejune:2_calibration_GUI.py
 from pathlib import Path
 
 # Add src/ to the Python path
@@ -38,6 +41,7 @@ from src.calibration.create_calibration_parameters import (
 from src.calibration_progress.create_calibration_progress_widget import (
     CalibrationProgressWidget
     )
+<<<<<<< HEAD:SMA_REACT_GUI/calibration_GUI.py
     
 #def log_error(msg):
 #    try:
@@ -48,6 +52,10 @@ from src.calibration_progress.create_calibration_progress_widget import (
 #    except Exception as log_fail:
 #        # Last resort if even logging fails
 #        pass
+=======
+
+Path("output").mkdir(parents=True, exist_ok=True)
+>>>>>>> postclean-prejune:2_calibration_GUI.py
 
 class App(QtWidgets.QMainWindow):
     '''
