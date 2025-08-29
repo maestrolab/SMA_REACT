@@ -2,6 +2,7 @@
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import pandas as pd
+from pathlib import Path
 
 from src.preprocessor.data_reader import reader
 
@@ -51,7 +52,16 @@ def plotDSC(file_name, step_initial, step_final, x_axis, y_axis, filter, movavgx
     # writer.close()
     
     # exporting to a CSV file
-    data.to_csv("output/DSC.csv", index=False)
+    
+    script_dir = Path(__file__).resolve().parent  
+    output_dir = script_dir.parent.parent / 'output'
+    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+    file_path = output_dir / "DSC.csv"
+    data.to_csv(file_path)
+    
+    
+    #data.to_csv("output/DSC.csv", index=False)
+    print(f"Output will be saved to: {output_dir}")
     
     #with pd.ExcelWriter("output/DSC.xlsx", engine="openpyxl") as writer:
      #   data.to_excel(writer, index=False)

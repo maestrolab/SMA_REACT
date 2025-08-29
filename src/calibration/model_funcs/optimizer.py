@@ -24,12 +24,16 @@ from . import Full_Model_stress
 
 from pathlib import Path
 
+
+
 #Numpy presets
 np.seterr(all='raise') #tell numpy to raise floating point errors.
 
 # Create output folder if it doesn't exist
-output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
-output_dir.mkdir(parents=True, exist_ok=True)
+script_dir = Path(__file__).resolve().parent  
+output_dir = script_dir.parent.parent.parent / 'output'
+output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+print(f"Output will be saved to: {output_dir}")
 
 def cxTwoPointCopy(ind1, ind2):
     """Execute a two points crossover with copy on the input individuals. The
@@ -367,7 +371,7 @@ def evaluate(
         try:
             for i in range(len(eps_model_total)):
                 file_name = 'optimal_model_'+str(i)+'.csv'
-                output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+                # output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
                 output_file = os.path.join(output_dir,file_name)
                 model_prediction = np.zeros(shape=(len(eps_model_total[0]),2))
                 model_prediction[:,0] = np.array(T_total[i])
@@ -527,7 +531,8 @@ def optimizer(toolbox,popSize,genSize,data, calWin, seed=None):
         logbook.record(gen=gen, evals=len(invalid_ind), **record)
         print(logbook.stream)
         #pop.sort(key=lambda x: x.fitness.values)
-        log_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+        log_dir = output_dir
+        #log_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
         log_dir.mkdir(parents=True, exist_ok=True)
         shelve_path = str(log_dir / 'popLog')  # Must be str for shelve
         db=shelve.open(shelve_path)

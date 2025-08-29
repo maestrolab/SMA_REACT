@@ -1,210 +1,3 @@
-# # IMPORT STATEMENTS
-# import pandas as pd
-# from data_reader import reader
-# from find_cycles import find_cycles
-# from functions import export_all
-# from moving_average_filter import movavg_filter
-# from plot_temp_vs_strain import plot_temp_vs_strain
-# from plot_3d import plotSST
-# from low_pass_filter import lowpassFilter
-# from high_pass_filter import highpassFilter
-#
-#
-# def analyze_fmts(fluke, fluke_temp_title, interval, startTime, mts_filename, glitch_check, temp_title, disp_title, shape, unit_out, area, movavg_conditions, datapoints_dict, orig_length, bandpass, delay, end, no_cycles):
-#     # EXTRACTING FLUKE DATA
-#     # fluke = reader("Fluke Jacob 3 cycles.csv")
-#     # fluke.extract()
-#     # pd.options.mode.chained_assignment = None
-#     fluke_data = fluke.dataframe[["Duration", fluke_temp_title]]
-#     # if delay > 0:
-#     #     durations = fluke_data["Duration"].to_list()
-#     #     durations = [x + delay for x in durations]
-#     #     fluke_data["Duration"] = durations
-#
-#
-#
-#
-#     # CONVERTING THE DURATIONS TO TIME ELAPSED SINCE START AND FORMATTING THEM
-#     # fluke_data = fluke_data.head(-1)
-#     # durations = fluke_data["Duration"].tolist()
-#     # for z in range(len(durations)):
-#     #     if type(durations[z]) == str:
-#     #         if durations[z].count(":") == 2:
-#     #             durations[z] = datetime.datetime.strptime(durations[z], "%H:%M:%S.%f")
-#     #         elif durations[z].count(":") == 1:
-#     #             durations[z] = datetime.datetime.strptime(durations[z], "%M:%S.%f")
-#     # for i in range(len(durations)):
-#     #     durations[i] = datetime.timedelta(hours=durations[i].hour, minutes=durations[i].minute,
-#     #                                       seconds=durations[i].second,
-#     #                                       microseconds=durations[i].microsecond)
-#     #     durations[i] = durations[i].total_seconds()
-#     # for j in range(1, len(durations)):
-#     #     durations[j] = durations[j] + durations[j - 1]
-#     # for k in range(len(durations)):
-#     #     durations[k] = round(durations[k], 3)
-#     # fluke_data["Duration"] = durations
-#
-#
-#     # RENAMING THE DURATIONS COLUMN TO TIME ELAPSED
-#     fluke_data = fluke_data.rename(columns={"Duration": "Time Elapsed (s)"})
-#
-#
-#     # EXTRACTING THE START TIME
-#     start_time = fluke.start_time
-#
-#
-#     # CONVERTING ALL THE DATA TO FLOATS
-#     for column_label in range(1, len(fluke_data.columns)):
-#         fluke_data[fluke_data.columns.tolist()[column_label]] = [float(x) for x in fluke_data[
-#             fluke_data.columns.tolist()[column_label]].tolist()]
-#
-#
-#     # PIVOTING FLUKE DATA
-#     # end = float(input("Enter end time in seconds(s) "))
-#     # end = fluke_data["Time Elapsed (s)"].tolist()[len(fluke_data["Time Elapsed (s)"]) - 1]
-#     #interval = float(input("Enter time interval in seconds(s) "))
-#     fluke_data = fluke_data.groupby(pd.cut(fluke_data["Time Elapsed (s)"], pd.interval_range(start=startTime, end=end, freq=interval, closed="left"))).mean()
-#     del fluke_data["Time Elapsed (s)"]
-#
-#
-#     # EXTRACTING MTS DATA
-#     mts = reader(mts_filename)
-#     mts.extract()
-#     mts_data = mts.dataframe.copy()
-#
-#     if delay != 0:
-#         time_key = mts_data.columns.tolist()[0]
-#         durations = mts_data[time_key]
-#         durations = [x - abs(delay) for x in durations]
-#         mts_data[time_key] = durations
-#
-#
-#     # INITIALIZING MTS TEMPERATURE TITLE VARIABLE
-#     # temp_title_unformat, column_list = header_choice(mts_data.columns.tolist(), "MTS temperature")
-#     # temp_title = mts_data.columns[column_list.index(temp_title_unformat.lower().replace(" ", ""))]
-#
-#
-#     # ACCOUNTING FOR GLITCH IN THE MTS
-#     # print("Sometimes the MTS glitches at 0 degrees.")
-#     # glitch_check = input("Would you like to account for this glitch in the MTS and delete all spurious zeroes (Yes/No)? ")
-#     if glitch_check.lower() == "yes":
-#         for k in range(20):
-#             delete_list = []
-#             j=1
-#             for i in range(1, len(mts_data[temp_title])):
-#                 if mts_data[temp_title].iloc[i] == 0 and mts_data[temp_title].iloc[i+1] < 0.5:
-#                     delete_list.append(i)
-#                     j += 1
-#             mts_data = mts_data.drop(mts_data.index[delete_list])
-#
-#
-#     # PIVOTING MTS DATA
-#     time_label = [y for y in mts_data.columns.tolist() if y.lower().find("time") >= 0]
-#     mts_data = mts_data.groupby(pd.cut(mts_data[time_label[0]], pd.interval_range(start=startTime, end=end, freq=interval, closed="left"))).mean()
-#     del mts_data[time_label[0]]
-#
-#
-#     # COMBINING THE MTS AND FLUKE DATA
-#     combined_data = pd.concat([fluke_data, mts_data], axis=1)
-#
-#
-#     # INTERPOLATING THE DATA
-#     for data_label in combined_data.columns:
-#         combined_data[data_label] = combined_data[data_label].interpolate(method="linear", limit_direction="forward")
-#
-#
-#     # FINDING THE DISPLACEMENT
-#     # column_headers = combined_data.columns.tolist()
-#     # disp_title_unformat, new_headers = header_choice(column_headers, "displacement")
-#     displacement = combined_data[disp_title]
-#     disp_units = disp_title[-4:].strip()
-#     # disp_title = combined_data.columns[new_headers.index(disp_title_unformat.lower())]
-#
-#
-#     # MOVING AVERAGE FILTER
-#     List_of_loads, mov_avg_set, unit, figure1, figure2 = movavg_filter(combined_data, temp_title, disp_title, movavg_conditions, datapoints_dict,
-#                                                              fluke_check=True, fluke_temp_title=fluke_temp_title)
-#
-#
-#     # INTERPOLATING THE MOVING AVERAGES
-#     # for column in combined_data.columns:
-#     #     if "Moving Average" in column:
-#     #         combined_data[column] = combined_data[column].interpolate(method="linear", limit_direction="backward")
-#
-#
-#     # CALCULATING STRESS AND ADDING IT TO DATAFRAME
-#     # area, unit_out, shape = Geometry_input()
-#     Stresses = []
-#     if "load" in mov_avg_set:
-#         search = ""
-#         for col in combined_data.columns:
-#             if "Load Moving Average" in col:
-#                 search = col
-#         for force in combined_data[search]:
-#             stress = force/area
-#             Stresses.append(stress)
-#     else:
-#         for force in List_of_loads:
-#             stress = force / area
-#             Stresses.append(stress)
-#
-#     stress_col_name = 'Stress' + ' (' + unit + '/' + unit_out + '^2)'
-#     combined_data[stress_col_name] = Stresses
-#
-#
-#     # CALCULATING THE STRAIN FROM THE DISPLACEMENT AND LENGTH
-#     length = orig_length
-#     strains = []
-#     if "extension" in mov_avg_set or "all" in mov_avg_set:
-#         for disp in combined_data["Displacement Moving Average"].tolist():
-#             strains.append(disp/length)
-#     else:
-#         for disp in displacement:
-#             strains.append(disp / length)
-#     combined_data["Strain"] = strains
-#
-#
-#     # BANDPASS FILTERING
-#     choice = bandpass["Choice"]
-#     if choice:
-#         if bandpass["Type"] == "low":
-#             combined_data["Filtered Strain"] = lowpassFilter(bandpass["Order"], bandpass["Sample Rate"], bandpass["Cutoff Frequency"], combined_data["Strain"])
-#         elif bandpass["Type"] == "high":
-#             combined_data["Filtered Strain"] = highpassFilter(bandpass["Order"], bandpass["Sample Rate"], bandpass["Cutoff Frequency"], combined_data["Strain"])
-#
-#
-#     # RENAMING COLUMNS WTH UNITS
-#     # for label in combined_data.columns:
-#     #     if label.lower().find("sample") >= 0:
-#     #         combined_data = combined_data.rename(columns={label: "Sample (°C)"})
-#
-#
-#     # ADDING CYCLE NUMBERS TO THE DATAFRAME
-#     find_cycles(combined_data, temp_title)
-#
-#
-#     # EXPORTING DATA
-#     export_all(combined_data, start_time, shape, area, unit_out, length, disp_units, "MTS + Fluke.xlsx")
-#
-#
-#     # PLOTTING DATA
-#     if "temperature" in mov_avg_set or "all" in mov_avg_set:
-#         temp_strain_plot = plot_temp_vs_strain(combined_data, "MTS Temperature Moving Average", choice, no_cycles, fluke_check=True, fluke_temp_title="Fluke Temperature Moving Average")
-#         figure3d = plotSST(combined_data, "MTS Temperature Moving Average", stress_col_name, fluke_check=True)
-#     else:
-#         temp_strain_plot = plot_temp_vs_strain(combined_data, temp_title, choice, no_cycles, fluke_check=True, fluke_temp_title=combined_data.columns.tolist()[1])
-#         figure3d = plotSST(combined_data, temp_title, stress_col_name, fluke_check=True)
-#
-#     # EXPORTING FOR ASMADA
-#     asm_cols = [temp_title, fluke_temp_title, stress_col_name, "Strain"]
-#     if "temperature" in mov_avg_set or "all" in mov_avg_set:
-#         asm_cols.insert(2, "MTS Temperature Moving Average")
-#         asm_cols.insert(3, "Fluke Temperature Moving Average")
-#     asmada_df = combined_data[asm_cols]
-#     asmada_df.to_csv("ASMADA Data.csv", index=False)
-#
-#
-#     return figure1, figure2, temp_strain_plot, figure3d
 
 # IMPORT STATEMENTS
 
@@ -218,7 +11,7 @@ from src.preprocessor.moving_average_filter import movavg_filter
 from src.preprocessor.plot_3d import plotSST
 from src.preprocessor.low_pass_filter import lowpassFilter
 from src.preprocessor.high_pass_filter import highpassFilter
-
+from pathlib import Path
 from collections import Counter
 
 # parameters
@@ -365,13 +158,22 @@ def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, 
         asm_cols.append("Filtered Strain")
     asmada_df = final_df[asm_cols]
     asmada_df = final_df[asm_cols].replace("", pd.NA).dropna().reset_index(drop=True) #remove empty space from moving average filter
-    asmada_df.to_csv("output/clean_data_TSE.csv", index=False)
+    
+    script_dir = Path(__file__).resolve().parent  
+    output_dir = script_dir.parent.parent / 'output'
+    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+    file_path = output_dir / "clean_data_TSE.csv"
+    asmada_df.to_csv(file_path)
+    
+    #asmada_df.to_csv("output/clean_data_TSE.csv", index=False)
 
     # PLOTTING DATA
     start_index = final_df["Relative Time"].searchsorted(relative_start_time, side="left")
     end_index = final_df["Relative Time"].searchsorted(relative_end_time, side="right")
     df_to_plot = final_df.iloc[start_index:end_index + 1, :]
-    df_to_plot.to_csv("output/processed_synced.csv")
+    file_path = output_dir / "processed_synced.csv"
+    df_to_plot.to_csv(file_path)
+    #df_to_plot.to_csv("output/processed_synced.csv")
     if "temperature" in mov_avg_set or "all" in mov_avg_set:
         temp_vs_strain_plot, colorbar_error = plot_temp_vs_strain(df_to_plot, "MTS Temperature Moving Average", choice, no_cycles, True,
                                                   "Fluke Temperature Moving Average")
@@ -381,7 +183,8 @@ def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, 
         temp_vs_strain_plot, colorbar_error = plot_temp_vs_strain(df_to_plot, mts_temp_title, choice, no_cycles, True, fluke_temp_title)
         temp_vs_stress_vs_strain_plot = plotSST(df_to_plot, mts_temp_title, stress_title, choice, no_cycles,
                                                 True, fluke_temp_title)
-
+    
+    print(f"Output will be saved to: {output_dir}")
     # EXPORTING DATA
     #final_df.to_csv("output/MTS + Fluke.csv", index=True)
 

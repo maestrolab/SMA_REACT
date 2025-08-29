@@ -16,15 +16,19 @@ import sys
 from pathlib import Path
 
 # Add src/ to the Python path
-if getattr(sys, 'frozen', False):
-    # PyInstaller executable
-    script_dir = os.path.dirname(sys.executable)
-else:
-    # Normal Python script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+script_dir = Path(__file__).resolve().parent  
+output_dir = script_dir.parent / 'output'
+output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+
+# if getattr(sys, 'frozen', False):
+#     # PyInstaller executable
+#     script_dir = os.path.dirname(sys.executable)
+# else:
+#     # Normal Python script
+#     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-parent_dir = os.path.join(script_dir, "..")
-sys.path.insert(0, parent_dir)
+# parent_dir = os.path.join(script_dir, "..")
+# sys.path.insert(0, parent_dir)
 #print("\n".join(sys.path))
 from src.data_input.create_data_input import (
     DataInputWidget
@@ -49,7 +53,7 @@ from src.calibration_progress.create_calibration_progress_widget import (
 #        # Last resort if even logging fails
 #        pass
 
-Path("output").mkdir(parents=True, exist_ok=True)
+##Path("output").mkdir(parents=True, exist_ok=True)
 
 class App(QtWidgets.QMainWindow):
     '''
@@ -193,10 +197,11 @@ class App(QtWidgets.QMainWindow):
         self.calibration_plotting_widget.export_button.setEnabled(True)
         
         # Remove DEAP files
-        log_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
-        log_dir.mkdir(parents=True, exist_ok=True)
+        
+        #log_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+        #log_dir.mkdir(parents=True, exist_ok=True)
         for suffix in [".bak", ".dat", ".dir", ".db"]:
-            file = log_dir / f"popLog{suffix}"
+            file = output_dir / f"popLog{suffix}"
             if file.is_file():
                 file.unlink()
 
@@ -261,9 +266,14 @@ class App(QtWidgets.QMainWindow):
                 str(date.today()),
             }
 
-        output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
-        output_dir.mkdir(parents=True, exist_ok=True)
+        
         file_name = output_dir / (str(date.today()) + '_calibration.json')
+
+        # output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+        # output_dir.mkdir(parents=True, exist_ok=True)
+        # file_name = output_dir / (str(date.today()) + '_calibration.json')
+        
+        print(f"Output will be saved to: {output_dir}")
 
 
         with open(file_name, 'w', encoding='utf-8') as file:

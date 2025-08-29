@@ -127,11 +127,13 @@ def analyze_mts(file, end, start, glitch_check, temp_title, disp_title, shape, u
     # EXPORTING DATA
     # export_all(mts_data, start, shape, area, unit_out, orig_length, disp_units, "MTS_ONLY.xlsx")
     # Create output folder if it doesn't exist
-    output_dir = Path.home() / 'Desktop' / 'SMA_REACT_output'
+    script_dir = Path(__file__).resolve().parent  
+    output_dir = script_dir.parent.parent / 'output'
     output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
     file_path = output_dir / "processed_MTS.csv"
     mts_data.to_csv(file_path)
-
+    
+    
     # EXPORTING FOR ASMADA
     asm_cols = [temp_title, stress_col_name, "Strain"]
     if "temperature" in movavg_conditions or "all" in movavg_conditions:
@@ -142,6 +144,8 @@ def analyze_mts(file, end, start, glitch_check, temp_title, disp_title, shape, u
     asmada_df = mts_data[asm_cols].replace("", pd.NA).dropna().reset_index(drop=True) #remove empty space from moving average filter
     file_path = output_dir / "clean_data_TSE.csv"
     asmada_df.to_csv(file_path, index=False)
+
+    print(f"Output will be saved to: {output_dir}")
 
     plots = [final_plot, figure3d]
     if len(movavg_conditions) != 0 and "none" not in movavg_conditions:

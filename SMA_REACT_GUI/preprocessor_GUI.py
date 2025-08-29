@@ -36,7 +36,7 @@ cgitb.enable(format="text")
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
-Path("output").mkdir(parents=True, exist_ok=True)
+#Path("output").mkdir(parents=True, exist_ok=True)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -1119,7 +1119,7 @@ class Ui_MainWindow(object):
         try:
             dsc = reader(self.dsc_data["DSC File Name"])
             steps = dsc.extract_DSC()
-            QMessageBox.about(MainWindow, "Steps", steps)
+            QMessageBox.about(None, "Steps", steps)
         except KeyError:
             error = QtWidgets.QMessageBox(self.centralwidget)
             error.setIcon(QMessageBox.Critical)
