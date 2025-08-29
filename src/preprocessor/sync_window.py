@@ -8,6 +8,7 @@ from sklearn.metrics import auc
 import numpy as np
 from matplotlib.figure import Figure
 from sklearn.preprocessing import minmax_scale
+from PyQt5.QtWidgets import QMessageBox
 import matplotlib.pyplot as plt
 
 
@@ -77,9 +78,10 @@ class SyncWindow(QWidget):
 
         # DELAY SECTION
         self.delay_layout = QHBoxLayout()
+       # self.delay_section_layout = QVBoxLayout()
         instructions = QLabel()
         instructions.setFont(font)
-        instructions.setText("Drag slider to adjust delay or enter a value in the box:")
+        instructions.setText("To adjust, drag slider or use arrow keys.")
         horizontal_spacer = QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum)
         horizontal_spacer2 = QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum)
         horizontal_spacer3= QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -88,10 +90,12 @@ class SyncWindow(QWidget):
         self.delay_layout.addItem(horizontal_spacer)
         self.delay_layout.addWidget(instructions)
         self.delay_slider = QSlider(Qt.Horizontal)
-        self.delay_slider.setMinimum(-5000)
-        self.delay_slider.setMaximum(5000)
+        self.delay_slider.setMinimum(-4000)
+        self.delay_slider.setMaximum(4000)
         self.delay_slider.setValue(int(self.delay))
         self.delay_edit = QLineEdit(self)
+        self.delay_edit.setText("0")  
+        self.delay_edit.setReadOnly(True)
         self.delay_edit.setMaximumWidth(75)
         self.delay_edit.setText(str(self.delay))
         self.delay_layout.addWidget(self.delay_slider)
@@ -105,7 +109,17 @@ class SyncWindow(QWidget):
         self.abs_time_switch = QCheckBox(self)
         self.abs_time_switch.setText("Absolute Time")
         self.delay_layout.addWidget(self.abs_time_switch)
+        #self.delay_section_layout.addLayout(self.delay_layout)
 
+        # # --- NOTES BELOW ---
+        # notes_label = QLabel()
+        # notes_label.setText("The goal of this section is to find a reasonable delay \n"
+        #                     "between your stress/strain data and external temperature data.\n"
+        #                     "You will pick a start time and end time below and to find areas \n"
+        #                     "for advacned troubleshooting techniques. Moderate intersection minimums will \n"
+        #                     "help find the start and end point of the areas without false positives.")
+        # notes_label.setStyleSheet("color: gray; font-size: 10pt;")  # optional styling
+        # self.delay_section_layout.addWidget(notes_label)
 
         # START/END TIME SECTION
         self.times_layout = QHBoxLayout()
@@ -125,7 +139,7 @@ class SyncWindow(QWidget):
         self.test_button.setFont(bold_font)
         min_intersect_label = QLabel()
         min_intersect_label.setFont(font)
-        min_intersect_label.setText("Minimum distance between intersections:")
+        min_intersect_label.setText("Minimum time interval between intersections (>=2):")
         self.min_intersect_edit = QLineEdit(self)
         self.min_intersect_edit.setMaximumWidth(75)
         self.times_layout.addItem(horizontal_spacer3)
@@ -187,7 +201,7 @@ class SyncWindow(QWidget):
         self.mts_end.setMaximumWidth(75)
         mts_min_intersect_label = QLabel()
         mts_min_intersect_label.setFont(font)
-        mts_min_intersect_label.setText("Minimum distance between intersections:")
+        mts_min_intersect_label.setText("Minimum time interval between intersections (>=2):")
         self.mts_min_intersect = QLineEdit(self)
         self.mts_min_intersect.setMaximumWidth(75)
         self.mts_test_button = QPushButton(self)
@@ -203,7 +217,7 @@ class SyncWindow(QWidget):
         self.times_layout2.addWidget(self.mts_test_button)
         self.times_layout2.addItem(horizontal_spacer9)
         self.area2 = QLabel(self)
-        self.area2.setText("Calculated Area Between Curves: ")
+        self.area2.setText("Calculated Area Between Curves:")
         self.area2.setAlignment(Qt.AlignCenter)
         self.area2.setFont(bold_font)
         self.area2.setMaximumHeight(40)
@@ -211,7 +225,7 @@ class SyncWindow(QWidget):
         delay_plotter_title = QLabel()
         delay_plotter_title.setMaximumHeight(40)
         delay_plotter_title.setFont(bold_font)
-        delay_plotter_title.setText('Plot Delay vs. Area')
+        delay_plotter_title.setText('Advanced Plot of Delay vs. Area Between Curves')
         delay_plotter_title.setAlignment(Qt.AlignCenter)
         delay_initial_label = QLabel()
         delay_initial_label.setFont(font)
@@ -228,7 +242,7 @@ class SyncWindow(QWidget):
         delay_interval_label = QLabel()
         delay_interval_label.setFont(font)
         delay_interval_label.setMaximumHeight(40)
-        delay_interval_label.setText("Delay Interval:")
+        delay_interval_label.setText("Scan Interval:")
         self.delay_interval = QLineEdit(self)
         self.delay_interval.setMaximumWidth(75)
         self.plot_button = QPushButton(self)
@@ -283,11 +297,11 @@ class SyncWindow(QWidget):
         self.mts_test_button.clicked.connect(self.calcArea2)
         self.plot_button.clicked.connect(self.plotDelayArea)
 
-
     def sliderMove(self):
         val = self.delay_slider.value()
         self.delay_edit.setText(str(val))
         self.delay = val
+
 
     def delayChange(self):
         val = float(self.delay_edit.text())
@@ -395,8 +409,15 @@ class SyncWindow(QWidget):
         self.canvas.draw()
 
 
+ 
+
     def getIntersectDistanceTolerance(self):
-        self.intersect_tolerance = float(self.min_intersect_edit.text())
+        value = float(self.min_intersect_edit.text())
+        if value < 2:
+            QMessageBox.warning(None, "Invalid Input", "Value must be 2 or greater.")
+            value = 2  # fallback
+        self.intersect_tolerance = value
+
 
 
     def calcArea(self):
@@ -484,7 +505,7 @@ class SyncWindow(QWidget):
 
         area_between_curves = abs(area_mts - area_fluke)
 
-        self.area_label.setText("Intersections detected at times: {}s and {}s; Calculated Area: {:.2f}".format(min(mts_time), max(mts_time), area_between_curves))
+        self.area_label.setText("Initial and final intersection detected at: {}s and {}s; Calculated Area Within: {:.2f}".format(min(mts_time), max(mts_time), area_between_curves))
 
     # TEMPORARY FOR TROUBLESHOOTING
     def calcArea2(self):
@@ -670,6 +691,14 @@ class SyncWindow(QWidget):
         for i in range(initial, final + 1, interval):
             areas.append(self.areaTester(start, end, min_dist, i))
 
+        #plt.plot(delays, areas)
+       
+        
+       
+        plt.figure("Area Sync")
         plt.plot(delays, areas)
-        plt.show()
-
+        plt.title("Syncing Between Load Frame and External Temperature")
+        plt.xlabel("Time Delay (s)")
+        plt.ylabel("Area Between Curves")
+        plt.tight_layout()
+        plt.show()(block=True)
