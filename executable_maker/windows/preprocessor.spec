@@ -5,7 +5,7 @@ a = Analysis(
     ['..\..\SMA_REACT_GUI\\preprocessor_GUI.py'],
     pathex=[],
     binaries=[],
-    datas=[('../../src/preprocessor/media', '../../src/preprocessor/media')],
+    datas=[('../../src/preprocessor/media', 'src/preprocessor/media')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
