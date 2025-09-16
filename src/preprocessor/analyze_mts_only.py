@@ -13,6 +13,19 @@ from src.preprocessor.plot_3d import plotSST
 from src.preprocessor.low_pass_filter import lowpassFilter
 from src.preprocessor.high_pass_filter import highpassFilter
 from pathlib import Path
+import json
+
+# Load the output_dir from the config file
+try:
+    with open("output_config.json") as f:
+        config = json.load(f)
+        output_dir = Path(config["output_dir"])
+except (FileNotFoundError, KeyError, json.JSONDecodeError):
+    print("Couldn't read output_config.json. Did you select an output folder at the beginning?")
+    exit(1)
+
+# Make sure the directory exists
+output_dir.mkdir(parents=True, exist_ok=True)
 
 
 
@@ -127,9 +140,9 @@ def analyze_mts(file, end, start, glitch_check, temp_title, disp_title, shape, u
     # EXPORTING DATA
     # export_all(mts_data, start, shape, area, unit_out, orig_length, disp_units, "MTS_ONLY.xlsx")
     # Create output folder if it doesn't exist
-    script_dir = Path(__file__).resolve().parent  
-    output_dir = script_dir.parent.parent / 'output'
-    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+    #script_dir = Path(__file__).resolve().parent  
+    #output_dir = script_dir.parent.parent / 'output'
+    #output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
     file_path = output_dir / "processed_MTS.csv"
     mts_data.to_csv(file_path)
     

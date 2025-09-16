@@ -22,18 +22,26 @@ from deap import (
 from . import util_funcs
 from . import Full_Model_stress
 
+import json
 from pathlib import Path
 
+# Load the output_dir from the config file
+try:
+    with open("output_config.json") as f:
+        config = json.load(f)
+        output_dir = Path(config["output_dir"])
+except (FileNotFoundError, KeyError, json.JSONDecodeError):
+    print("Couldn't read output_config.json. Did you select an output folder at the beginning?")
+    exit(1)
 
+# Make sure the directory exists
+output_dir.mkdir(parents=True, exist_ok=True)
 
 #Numpy presets
 np.seterr(all='raise') #tell numpy to raise floating point errors.
 
 # Create output folder if it doesn't exist
-script_dir = Path(__file__).resolve().parent  
-output_dir = script_dir.parent.parent.parent / 'output'
-output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
-print(f"Output will be saved to: {output_dir}")
+#script_dir = Path(__file__).resolve().parent  
 
 def cxTwoPointCopy(ind1, ind2):
     """Execute a two points crossover with copy on the input individuals. The

@@ -21,9 +21,21 @@ import sys
 import os
 from pathlib import Path
 # Add src/ to the Python path
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(script_dir, ".."))
-sys.path.insert(0, parent_dir)
+if getattr(sys, 'frozen', False):
+    # Running in executable
+    script_dir = Path(sys._MEIPASS)
+else:
+    # Start from the current script location
+    current_dir = Path(__file__).resolve().parent
+    # Running as normal Python script
+    for parent in [current_dir] + list(current_dir.parents):
+        if (parent / "src").is_dir():
+            script_dir = parent
+            if str(parent) not in sys.path:
+                sys.path.insert(0, str(parent))  # Add the parent of 'src' to sys.path
+            break
+    else:
+        raise ImportError("Could not find 'src' directory in parent paths.")
 from src.preprocessor.data_reader import reader
 from src.preprocessor.analyze_mts_only import analyze_mts
 from src.preprocessor.analyze_fluke_and_mts import analyze_fmts
@@ -37,6 +49,11 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #en
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 #Path("output").mkdir(parents=True, exist_ok=True)
+
+# Have the user define the output directory
+from src.data_output.set_output_dir import get_output_dir
+output_dir = get_output_dir()
+print(f"Saving files to: {output_dir}")
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

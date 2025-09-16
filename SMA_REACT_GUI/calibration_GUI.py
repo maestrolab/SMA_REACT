@@ -15,21 +15,28 @@ from PyQt5 import QtGui, QtWidgets
 import sys
 from pathlib import Path
 
-# Add src/ to the Python path
-script_dir = Path(__file__).resolve().parent  
-output_dir = script_dir.parent / 'output'
-output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+# Set paths depending on if you are running from python or the executable
+if getattr(sys, 'frozen', False):
+    # Running in executable
+    script_dir = Path(sys._MEIPASS)
+else:
+    # Start from the current script location
+    current_dir = Path(__file__).resolve().parent
+    # Running as normal Python script
+    for parent in [current_dir] + list(current_dir.parents):
+        if (parent / "src").is_dir():
+            script_dir = parent
+            if str(parent) not in sys.path:
+                sys.path.insert(0, str(parent))  # Add the parent of 'src' to sys.path
+            break
+    else:
+        raise ImportError("Could not find 'src' directory in parent paths.")
 
-# if getattr(sys, 'frozen', False):
-#     # PyInstaller executable
-#     script_dir = os.path.dirname(sys.executable)
-# else:
-#     # Normal Python script
-#     script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-# parent_dir = os.path.join(script_dir, "..")
-# sys.path.insert(0, parent_dir)
-#print("\n".join(sys.path))
+# Have the user define the output directory
+from src.data_output.set_output_dir import get_output_dir
+output_dir = get_output_dir()
+print(f"Saving files to: {output_dir}")
+
 from src.data_input.create_data_input import (
     DataInputWidget
     )

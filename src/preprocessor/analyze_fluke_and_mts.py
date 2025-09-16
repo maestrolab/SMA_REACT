@@ -13,6 +13,7 @@ from src.preprocessor.low_pass_filter import lowpassFilter
 from src.preprocessor.high_pass_filter import highpassFilter
 from pathlib import Path
 from collections import Counter
+import json
 
 # parameters
 # disp_title = "Extension (mm)"
@@ -30,6 +31,18 @@ from collections import Counter
 # cycle_determiner = "fluke"
 # relative_start_time = 10145.8
 # relative_end_time = 15780.7
+
+# Load the output_dir from the config file
+try:
+    with open("output_config.json") as f:
+        config = json.load(f)
+        output_dir = Path(config["output_dir"])
+except (FileNotFoundError, KeyError, json.JSONDecodeError):
+    print("Couldn't read output_config.json. Did you select an output folder at the beginning?")
+    exit(1)
+
+# Make sure the directory exists
+output_dir.mkdir(parents=True, exist_ok=True)
 
 def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, orig_length, mov_avg_set, datapoints,
                  bandpass, mts_start_time, no_cycles, glitch_check, cycle_determiner, relative_start_time,
@@ -159,9 +172,9 @@ def analyze_fmts(mts_temp_title, fluke_temp_title, disp_title, area, area_unit, 
     asmada_df = final_df[asm_cols]
     asmada_df = final_df[asm_cols].replace("", pd.NA).dropna().reset_index(drop=True) #remove empty space from moving average filter
     
-    script_dir = Path(__file__).resolve().parent  
-    output_dir = script_dir.parent.parent / 'output'
-    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+    #script_dir = Path(__file__).resolve().parent  
+    #output_dir = script_dir.parent.parent / 'output'
+    #output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
     file_path = output_dir / "clean_data_TSE.csv"
     asmada_df.to_csv(file_path)
     

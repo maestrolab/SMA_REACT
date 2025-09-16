@@ -3,8 +3,21 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
+import json
 
 from src.preprocessor.data_reader import reader
+
+# Load the output_dir from the config file
+try:
+    with open("output_config.json") as f:
+        config = json.load(f)
+        output_dir = Path(config["output_dir"])
+except (FileNotFoundError, KeyError, json.JSONDecodeError):
+    print("Couldn't read output_config.json. Did you select an output folder at the beginning?")
+    exit(1)
+
+# Make sure the directory exists
+output_dir.mkdir(parents=True, exist_ok=True)
 
 
 def plotDSC(file_name, step_initial, step_final, x_axis, y_axis, filter, movavgx=0, movavgy=0):
@@ -53,9 +66,9 @@ def plotDSC(file_name, step_initial, step_final, x_axis, y_axis, filter, movavgx
     
     # exporting to a CSV file
     
-    script_dir = Path(__file__).resolve().parent  
-    output_dir = script_dir.parent.parent / 'output'
-    output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
+    #script_dir = Path(__file__).resolve().parent  
+    #output_dir = script_dir.parent.parent / 'output'
+    #output_dir.mkdir(parents=True, exist_ok=True)  # Ensure the output directory exists
     file_path = output_dir / "DSC.csv"
     data.to_csv(file_path)
     

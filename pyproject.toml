@@ -5,7 +5,7 @@ description = "SMA_REACT package"
 authors = [{name = "Patrick Walgren and Jacob Mingear"}]
 readme = "README.md"
 license = "BSD-3-Clause"
-license-files = "LICENSE"
+license-files = ["LICENSE"]
 keywords = ["Shape Memory Alloys", "Constitutive Model", "Calibration", "SMA"]
 classifiers = [
   # How mature is this project? Common values are
@@ -15,8 +15,8 @@ classifiers = [
   "Development Status :: 4 - Beta",
 
   # Indicate who your project is intended for
-  "Intended Audience :: Science/Research"
-  "Topic :: Scientific/Engineering",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering"
 ]
 requires-python = ">=3.9, <3.13"
 dependencies = [
