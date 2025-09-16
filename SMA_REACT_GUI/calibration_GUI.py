@@ -11,18 +11,23 @@ import cgitb
 import json
 import os
 from datetime import date
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 import sys
 from pathlib import Path
 
 # Set paths depending on if you are running from python or the executable
 if getattr(sys, 'frozen', False):
-    # Running in executable
+    # Running in executable (e.g. PyInstaller)
     script_dir = Path(sys._MEIPASS)
 else:
-    # Start from the current script location
-    current_dir = Path(__file__).resolve().parent
-    # Running as normal Python script
+    try:
+        current_dir = Path(__file__).resolve().parent
+    except NameError:
+        # Fallback for environments like Spyder where __file__ is not defined
+        import os
+        current_dir = Path(os.getcwd()).resolve()
+
+    # Look for 'src' directory in parent paths
     for parent in [current_dir] + list(current_dir.parents):
         if (parent / "src").is_dir():
             script_dir = parent
@@ -79,6 +84,10 @@ class App(QtWidgets.QMainWindow):
 
         '''
         super().__init__()
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.show()
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+        self.show()
         # Formatting
         self.title = 'Shape Memory Alloy REACT \
     (Rendering of Experimental Analysis and Calibration Tool)'

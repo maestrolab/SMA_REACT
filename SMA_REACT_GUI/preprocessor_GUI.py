@@ -59,6 +59,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         screen = QtWidgets.QApplication.primaryScreen().availableGeometry()
         screen_w, screen_h = screen.width(), screen.height()
+        self.MainWindow = MainWindow
         MainWindow.setObjectName("MainWindow")
         screen = QtWidgets.QApplication.primaryScreen().availableGeometry()
         MainWindow.resize(int(screen.width() * 1), int(screen.height() * 1))
@@ -1052,7 +1053,7 @@ class Ui_MainWindow(object):
 
     # file input for mts data file
     def browseMTSFile(self):
-        fileloc = QFileDialog.getOpenFileName(None, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
+        fileloc = QFileDialog.getOpenFileName(self.MainWindow, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
         if fileloc:
             mtsloc = str(fileloc[0])
             filename = mtsloc[mtsloc.rindex("/") + 1:]
@@ -1075,7 +1076,7 @@ class Ui_MainWindow(object):
 
     # file input for fluke data file
     def browseFlukeFile(self):
-        fileloc = QFileDialog.getOpenFileName(None, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
+        fileloc = QFileDialog.getOpenFileName(self.MainWindow, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
         if fileloc:
             flukeloc = str(fileloc[0])
             filename = flukeloc[flukeloc.rindex("/") + 1:]
@@ -1101,7 +1102,7 @@ class Ui_MainWindow(object):
 
 
     def getDSC(self):
-        fileloc = QFileDialog.getOpenFileName(None, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
+        fileloc = QFileDialog.getOpenFileName(self.MainWindow, "Open MTS Data File", "", "All Files(*);;Text Files(*.txt);;CSV Files(*.csv);;Excel Files(*.xlsx)")
         if fileloc:
             dscloc = str(fileloc[0])
             filename = dscloc[dscloc.rindex("/") + 1:]
@@ -1786,6 +1787,10 @@ class Ui_MainWindow(object):
 class AnotherWindow(QWidget):
     def __init__(self, graph, title):
         super().__init__()
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.show()
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+        self.show()
         self.setWindowTitle(title)
         self.canvas = FigureCanvas(graph)
         self.toolbar = NavigationToolbar(self.canvas, self)
@@ -1799,6 +1804,10 @@ def main_cli():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
+    MainWindow.setWindowFlags(MainWindow.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+    MainWindow.show()
+    MainWindow.setWindowFlags(MainWindow.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+    MainWindow.show()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()

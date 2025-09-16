@@ -22,7 +22,7 @@ try:
         output_dir = Path(config["output_dir"])
 except (FileNotFoundError, KeyError, json.JSONDecodeError):
     print("Couldn't read output_config.json. Did you select an output folder at the beginning?")
-    exit(1)
+    sys.exit(1)
 
 # Make sure the directory exists
 output_dir.mkdir(parents=True, exist_ok=True)
