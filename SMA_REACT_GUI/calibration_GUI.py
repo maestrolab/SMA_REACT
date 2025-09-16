@@ -15,19 +15,14 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 import sys
 from pathlib import Path
 
-# Set paths depending on if you are running from python or the executable
+# Add src/ to the Python path
 if getattr(sys, 'frozen', False):
-    # Running in executable (e.g. PyInstaller)
+    # Running in executable
     script_dir = Path(sys._MEIPASS)
 else:
-    try:
-        current_dir = Path(__file__).resolve().parent
-    except NameError:
-        # Fallback for environments like Spyder where __file__ is not defined
-        import os
-        current_dir = Path(os.getcwd()).resolve()
-
-    # Look for 'src' directory in parent paths
+    # Start from the current script location
+    current_dir = Path(__file__).resolve().parent
+    # Running as normal Python script
     for parent in [current_dir] + list(current_dir.parents):
         if (parent / "src").is_dir():
             script_dir = parent

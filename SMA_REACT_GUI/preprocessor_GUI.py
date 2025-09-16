@@ -36,6 +36,12 @@ else:
             break
     else:
         raise ImportError("Could not find 'src' directory in parent paths.")
+        
+# Have the user define the output directory
+from src.data_output.set_output_dir import get_output_dir
+output_dir = get_output_dir()
+print(f"Saving files to: {output_dir}")
+        
 from src.preprocessor.data_reader import reader
 from src.preprocessor.analyze_mts_only import analyze_mts
 from src.preprocessor.analyze_fluke_and_mts import analyze_fmts
@@ -49,11 +55,6 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True) #en
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
 
 #Path("output").mkdir(parents=True, exist_ok=True)
-
-# Have the user define the output directory
-from src.data_output.set_output_dir import get_output_dir
-output_dir = get_output_dir()
-print(f"Saving files to: {output_dir}")
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
