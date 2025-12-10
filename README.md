@@ -79,14 +79,26 @@ Here is a complete list of dependencies:
 
 ## How to cite SMA REACT
 Authors of scientific papers including results generated using SMA-REACT are encouraged to cite the following paper.
+https://link.springer.com/article/10.1007/s40830-025-00595-0
+#SharedIT link for free version of article: https://rdcu.be/eTVJD
+
+Walgren, P., Mingear, J. & Hartl, D. SMA-REACT: An Open-Source Toolkit for Shape Memory Alloy Data Visualization and Constitutive Model Calibration. Shap. Mem. Superelasticity (2025). https://doi.org/10.1007/s40830-025-00595-0
 
 ```xml
-@article{walgren_pre-print_2024,
-	title = {[{PRE}-{PRINT}] {The} {Shape} {Memory} {Alloy} {Rendering} and {Calibration} {Tool} ({SMA}-{REACT})},
-	journal = {Shape Memory and Superelasticity},
-	author = {Walgren, Patrick and Mingear, Jacob},
-	year = {2024},
-}
+TY  - JOUR
+AU  - Walgren, Patrick
+AU  - Mingear, Jacob
+AU  - Hartl, Darren
+PY  - 2025
+DA  - 2025/12/09
+TI  - SMA-REACT: An Open-Source Toolkit for Shape Memory Alloy Data Visualization and Constitutive Model Calibration
+JO  - Shape Memory and Superelasticity
+AB  - Post-processing shape memory alloy (SMA) characterization data and calibrating an appropriate constitutive model are vital but potentially time-consuming tasks when developing a new SMA technology. Such tasks can intimidate prospective SMA users as the multiple data streams, filtering techniques, and constitutive model formulation must all be understood. This prerequisite knowledge creates a barrier to entry and potentially restricts the adoption of SMAs into new fields. We present a tool to post-process experimental SMA data, generate publication-quality images, and calibrate the Lagoudas' three-dimensional constitutive model in an automated fashion. The Shape Memory Alloy Rendering of Experimental Analysis and Calibration Tool (SMA-REACT) is GUI-based and open-source, allowing for widespread adoption and modification. In this work, we describe SMA-REACT and calibrate a sample dataset to a one-dimensional reduction of the Lagoudas constitutive model, providing an example workflow that can be easily replicated with user data. Given the model’s Mises formulation, such a one-dimensional calibration is also completely sufficient for subsequent three-dimensional modeling. Our tool offers experimentalists, mechanicians, and designers a low-barrier-to-entry solution for post-processing and model calibration and helps speed the process between characterization and system integration.
+SN  - 2199-3858
+UR  - https://doi.org/10.1007/s40830-025-00595-0
+DO  - 10.1007/s40830-025-00595-0
+ID  - Walgren2025
+ER  - 
 ```
 
 
